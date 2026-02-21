@@ -1,0 +1,103 @@
+\documentclass[11pt]{article}
+
+% --------------------------------------------------
+% Page geometry
+% --------------------------------------------------
+\usepackage[
+  letterpaper,
+  margin=1in,
+  headheight=32pt,
+  footskip=60pt
+]{geometry}
+
+\usepackage{lastpage}
+
+% --------------------------------------------------
+% Fonts & encoding
+% --------------------------------------------------
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+% --------------------------------------------------
+% Math packages (common set)
+% --------------------------------------------------
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{mathtools}
+\usepackage{physics}
+\usepackage{siunitx}
+
+% --------------------------------------------------
+% Graphics & diagrams
+% --------------------------------------------------
+\usepackage{graphicx}
+\usepackage{tikz}
+\usepackage{circuitikz}
+
+% --------------------------------------------------
+% Header / Footer
+% --------------------------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{} % clear defaults
+
+% --------------------------------------------------
+% User-defined metadata (EDIT THESE)
+% --------------------------------------------------
+\newcommand{\NoteTitle}{Title of Assignment Goes Here}
+\newcommand{\StudentName}{Raleigh Littles}
+\newcommand{\StudentID}{Student ID goes here}
+\newcommand{\ClassName}{Class Name}
+\newcommand{\NoteDate}{\today}
+
+% --------------------------------------------------
+% Header layout
+% --------------------------------------------------
+\fancyhead[L]{%
+  \textbf{\NoteTitle}
+}
+
+\fancyhead[R]{%
+  \begin{tabular}{r}
+    \StudentName \\
+    ID: \StudentID \\
+    \NoteDate \\
+    Page \thepage \hspace{1pt} of \hspace{1pt} \pageref{LastPage}
+  \end{tabular}
+}
+
+% --------------------------------------------------
+% Footer layout
+% --------------------------------------------------
+\fancyfoot[L]{%
+  \textbf{\NoteTitle} --- \StudentName
+}
+
+\fancyfoot[C]{%
+  Page \thepage
+}
+
+\fancyfoot[R]{%
+  % Reserved space for a 300x300 px image (~3.1in x 3.1in)
+  \begin{minipage}[c][3.2in][c]{3.2in}
+    \centering
+    % Uncomment to include an image:
+    % \includegraphics[width=3in,height=3in,keepaspectratio]{footer-image.png}
+  \end{minipage}
+}
+
+% --------------------------------------------------
+% Rule lines
+% --------------------------------------------------
+\renewcommand{\headrulewidth}{0.4pt}
+\renewcommand{\footrulewidth}{0.4pt}
+
+% --------------------------------------------------
+% Document
+% --------------------------------------------------
+\begin{document}
+
+\null % to ensure the header is printed on the first page
+
+\end{document}
