@@ -4,9 +4,29 @@ LaTeX templates repository. Used for both LaTeX documents, as well as for creati
 
 US Letter size (8.5 x 11) as well as ISO A4 size templates are available.
 
+# Instructions
+
+* Install LaTeX
+* Clone this repository
+
+For use with tablet writing apps, you'll need to first build the document, export the PDF file to your tablet and import it into the app of your choice.
+
+If you're going to be working off the actual LaTeX document, 
+and you're using [TexMaker](https://www.xm1math.net/texmaker/),
+
+I recommend doing 'File' -> 'New by copying an existing file'
+
 # Images
 
 These are the different types of templates available:
+
+## Standard assignment template
+
+Simple template for homework, notes, or lab reports.
+
+Features a dual header and footer. Header contains sequence page numbers (x of y); while Footer contains title, name, current page number, and space for an approximately 1" x 1" image - useful for logos or copyright QR codes
+
+![assignment-template](./images/assignment-template.png)
 
 ## Notability Grid
 
