@@ -1,0 +1,82 @@
+%%%%% Scratch work template for Notability using LaTEx. Engineering grid (drawn with only TikZ), with multiple boxes at top of page for header fields.
+%%%%% Convert this to a PDF by building it in LaTEX, and then in Notability just import the location to that PDF.
+%%%%% Copyright: Raleigh Littles, 2026
+
+\documentclass[11pt]{article}
+
+% --- Page size / margins (US Letter) ---
+\usepackage[letterpaper,margin=0.1in]{geometry}
+
+% --- Fonts & helpers ---
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+
+% --- Drawing (grid + header boxes) ---
+\usepackage{tikz}
+\usepackage{eso-pic}    % place TikZ in the background on every page
+\usepackage{tabularx}
+
+% ====== USER FIELDS ======
+\newcommand{\StudentField}{Raleigh Littles}
+\newcommand{\CourseField}{Course name}
+\newcommand{\DateField}{\Today} % "Today's Date" filled in
+% Leave title empty on purpose:
+\newcommand{\TitleField}{Assignment title } % <-- fill later if you want
+
+% ====== GRID SETTINGS ======
+% Engineering grid vibe: light minor grid + darker major grid
+\newcommand{\MinorStep}{0.1in}  % small squares
+\newcommand{\MajorStep}{0.5in}  % heavy lines every 5 minor squares
+
+% Header band height reserved so the grid doesn't run under the header boxes
+\newcommand{\HeaderBandHeight}{0.5in}
+
+\AddToShipoutPictureBG{%
+  \AtPageLowerLeft{%
+    \begin{tikzpicture}[remember picture,overlay]
+      % Page corners
+      \coordinate (LL) at (current page.south west);
+      \coordinate (UR) at (current page.north east);
+
+      % Define a "grid region" that starts below the header band
+      \coordinate (GridTopLeft)  at ([yshift=-\HeaderBandHeight]current page.north west);
+      \coordinate (GridBottomRight) at (current page.south east);
+
+      % Minor grid
+      \draw[step=\MinorStep, line width=0.2pt, opacity=0.25]
+        (GridTopLeft) grid (GridBottomRight);
+
+      % Major grid
+      \draw[step=\MajorStep, line width=0.45pt, opacity=0.45]
+        (GridTopLeft) grid (GridBottomRight);
+    \end{tikzpicture}%
+  }%
+}
+
+% ====== HEADER BOXES ======
+\setlength{\parindent}{0pt}
+\newcommand{\HeaderBoxes}{%
+  \vspace*{-0.25in} % pull up slightly if needed
+  \begin{center}
+    \renewcommand{\arraystretch}{1.35}
+    \begin{tabularx}{\textwidth}{|X|X|X|X|}
+      \hline
+      \StudentField
+      \textit{\#0123456789} &
+      \textbf{\CourseField} &
+      \today &
+      \textbf{\TitleField} \\
+      \hline
+    \end{tabularx}
+  \end{center}
+  \vspace{0.15in}
+}
+
+\begin{document}
+\HeaderBoxes
+
+% Start writing anywhere below. The grid continues on every page.
+% Tip: Use \newpage for a new sheet.
+
+\end{document}

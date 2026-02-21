@@ -1,0 +1,125 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- Page size / margins (US Letter) ---
+\usepackage[
+  a4paper,
+  left=0.6in,right=0.6in,
+  top=0.8in,
+  bottom=0.6in,
+  headheight=0.75in,
+  headsep=0.20in
+]{geometry}
+
+% --- Fonts & helpers ---
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+
+% --- Drawing (Tianzege grid) ---
+\usepackage{tikz}
+\usepackage{eso-pic}    % place TikZ in the background on every page
+
+% --- Header boxes ---
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+
+% ====== USER FIELDS ======
+\newcommand{\StudentField}{Raleigh Littles}
+\newcommand{\CourseField}{Course Name}
+\newcommand{\TitleField}{Title} % leave empty for title
+
+% ====== TIANZEGE GRID SETTINGS (numeric inches) ======
+% Size of each practice box (typical: 0.4–0.6in)
+\newcommand{\BoxSizeIn}{0.50}
+
+% Start the grid below the header area (increase to push grid down)
+\newcommand{\GridTopOffsetIn}{0.0}
+
+% Line styling
+\newcommand{\OuterLineWidth}{0.30pt}
+\newcommand{\InnerLineWidth}{0.20pt}
+\newcommand{\OuterOpacity}{0.30}
+\newcommand{\InnerOpacity}{0.22}
+
+% ====== BACKGROUND: TIANZEGE GRID ======
+\AddToShipoutPictureBG{%
+  \AtPageLowerLeft{%
+    \begin{tikzpicture}[remember picture,overlay]
+      % Work in inches with origin at page bottom-left
+      \begin{scope}[shift={(current page.south west)}, x=1in, y=1in]
+
+        % US Letter size in inches
+        \pgfmathsetmacro{\PageW}{8.5}
+        \pgfmathsetmacro{\PageH}{11.0}
+
+        % Grid region top (below header)
+        \pgfmathsetmacro{\YTop}{\PageH - \GridTopOffsetIn}
+
+        % Box geometry
+        \pgfmathsetmacro{\s}{\BoxSizeIn}
+
+        % Clip so nothing draws in the header band
+        \begin{scope}
+          \clip (0,0) rectangle (\PageW,\YTop);
+
+          % Overshoot so edges fill cleanly
+          \pgfmathsetmacro{\XMin}{-1.5*\s}
+          \pgfmathsetmacro{\XMax}{\PageW + 1.5*\s}
+          \pgfmathsetmacro{\YMin}{-1.5*\s}
+          \pgfmathsetmacro{\YMax}{\YTop + 1.5*\s}
+
+          % How many boxes to draw
+          \pgfmathtruncatemacro{\NCols}{ceil((\XMax-\XMin)/\s) + 1}
+          \pgfmathtruncatemacro{\NRows}{ceil((\YMax-\YMin)/\s) + 1}
+
+          % Draw repeating Tianzege boxes:
+          % outer square + center vertical/horizontal (no diagonals)
+          \foreach \r in {0,...,\NRows} {
+            \pgfmathsetmacro{\y}{\YMin + \r*\s}
+            \foreach \c in {0,...,\NCols} {
+              \pgfmathsetmacro{\x}{\XMin + \c*\s}
+
+              % Outer square
+              \draw[line width=\OuterLineWidth, opacity=\OuterOpacity]
+                (\x,\y) rectangle ++(\s,\s);
+
+              % Inner cross (田)
+              \draw[line width=\InnerLineWidth, opacity=\InnerOpacity]
+                (\x+\s/2,\y) -- ++(0,\s);  % vertical center
+              \draw[line width=\InnerLineWidth, opacity=\InnerOpacity]
+                (\x,\y+\s/2) -- ++(\s,0);  % horizontal center
+            }
+          }
+        \end{scope}
+      \end{scope}
+    \end{tikzpicture}%
+  }%
+}
+
+% ====== HEADER (no page numbers) ======
+\pagestyle{fancy}
+\fancyhf{} % clears header/footer -> no page numbers
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancyhead[C]{%
+  \renewcommand{\arraystretch}{1.35}%
+  \setlength{\tabcolsep}{6pt}%
+  \begin{tabularx}{\textwidth}{|X|X|X|X|}
+    \hline
+    \textbf{\StudentField} &
+    \CourseField &
+    \today &
+    \textbf{\TitleField} \\
+    \hline
+  \end{tabularx}%
+}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+% Write your notes below. Tianzege grid begins under the header and continues on each page.
+\null
+
+\end{document}

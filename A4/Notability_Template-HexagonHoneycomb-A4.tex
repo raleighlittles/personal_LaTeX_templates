@@ -1,0 +1,125 @@
+\documentclass[11pt, a4paper]{article}
+
+% --- Page size / margins (A4, ISO 216) ---
+\usepackage[
+  a4paper,
+  left=0.6in,right=0.6in,
+  top=0.8in,
+  bottom=0.6in,
+  headheight=0.5in,
+  headsep=0.20in
+]{geometry}
+
+% --- Fonts & helpers ---
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+
+% --- Drawing (hex grid) ---
+\usepackage{tikz}
+\usepackage{eso-pic}    % place TikZ in the background on every page
+
+% --- Header boxes ---
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+
+% ====== USER FIELDS ======
+\newcommand{\StudentField}{Raleigh Littles}
+\newcommand{\CourseField}{Course Name}
+\newcommand{\TitleField}{Title} % leave empty for title
+
+% ====== HEX GRID SETTINGS (in inches, numeric) ======
+% Hex side length: smaller = denser grid (try 0.10 to 0.14)
+\newcommand{\HexSideIn}{0.12}
+
+% Start the grid below the header area (in inches, numeric)
+\newcommand{\GridTopOffsetIn}{0.0}
+
+% Line appearance
+\newcommand{\HexLineWidth}{0.25pt}
+\newcommand{\HexOpacity}{0.28}
+
+% ====== HEX GRID BACKGROUND ======
+\AddToShipoutPictureBG{%
+  \AtPageLowerLeft{%
+    \begin{tikzpicture}[remember picture,overlay]
+      % Work in inches with origin at page bottom-left
+      \begin{scope}[shift={(current page.south west)}, x=1in, y=1in]
+
+        % Page dimensions in inches (US Letter)
+        \pgfmathsetmacro{\PageW}{8.5}
+        \pgfmathsetmacro{\PageH}{11.0}
+
+        % Grid region top (below header)
+        \pgfmathsetmacro{\YTop}{\PageH - \GridTopOffsetIn}
+
+        % Hex geometry (pointy-top hexes)
+        \pgfmathsetmacro{\a}{\HexSideIn}
+        \pgfmathsetmacro{\dx}{sqrt(3)*\a}   % horizontal center-to-center
+        \pgfmathsetmacro{\dy}{1.5*\a}       % vertical center-to-center
+        \pgfmathsetmacro{\hx}{sqrt(3)/2*\a} % x offset to slanted vertices
+
+        % Clip so no hex lines appear in the header band
+        \begin{scope}
+          \clip (0,0) rectangle (\PageW,\YTop);
+
+          % Overshoot a bit so edges fill cleanly
+          \pgfmathsetmacro{\XMin}{-2*\dx}
+          \pgfmathsetmacro{\XMax}{\PageW + 2*\dx}
+          \pgfmathsetmacro{\YMin}{-2*\dy}
+          \pgfmathsetmacro{\YMax}{\YTop + 2*\dy}
+
+          % Draw the honeycomb: alternate row offset of dx/2
+          \pgfmathtruncatemacro{\NRows}{ceil((\YMax-\YMin)/\dy) + 2}
+          \pgfmathtruncatemacro{\NCols}{ceil((\XMax-\XMin)/\dx) + 2}
+
+          \foreach \r in {0,...,\NRows} {
+            \pgfmathsetmacro{\cy}{\YMin + \r*\dy}
+            \pgfmathsetmacro{\xoff}{mod(\r,2)*(\dx/2)}
+
+            \foreach \c in {0,...,\NCols} {
+              \pgfmathsetmacro{\cx}{\XMin + \c*\dx + \xoff}
+
+              % Hex outline (pointy-top)
+              \draw[line width=\HexLineWidth, opacity=\HexOpacity]
+                (\cx,      \cy+\a) --
+                (\cx+\hx,  \cy+\a/2) --
+                (\cx+\hx,  \cy-\a/2) --
+                (\cx,      \cy-\a) --
+                (\cx-\hx,  \cy-\a/2) --
+                (\cx-\hx,  \cy+\a/2) -- cycle;
+            }
+          }
+        \end{scope}
+      \end{scope}
+    \end{tikzpicture}%
+  }%
+}
+
+% ====== HEADER (no page numbers) ======
+\pagestyle{fancy}
+\fancyhf{} % clears header/footer -> no page numbers
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancyhead[C]{%
+  \renewcommand{\arraystretch}{1.0}%
+  \setlength{\tabcolsep}{3pt}%
+  \begin{tabularx}{\textwidth}{|X|X|X|X|}
+    \hline
+    \StudentField &
+    \CourseField &
+    \today &
+    \textbf{\TitleField} \\
+    \hline
+  \end{tabularx}%
+}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+% Write your notes below. Hex grid begins under the header and continues on each page.
+\null
+
+\end{document}
