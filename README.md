@@ -65,9 +65,25 @@ Useful for doing isometric drawings
 
 ## Notability Radial/Polar Log Graph
 
+( Missing A4 version !)
+
 Useful for working with polar coordinates.
 
 * Spokes are evenly spaced in angle (linear in degrees)
 * Rings grow geometrically (log)
 
 ![option-6](./images/radial-log-grid.png)
+
+## Notability Smith Chart
+
+( Missing A4 version )
+
+https://en.wikipedia.org/wiki/Smith_chart
+
+Used for Radio Frequency engineering.
+
+Dual variant as well.
+
+![Single variant](./images/smith-chart.jpg)
+
+![Dual smith chart](./images/dual-smith-chart.jpg)
