@@ -11,7 +11,7 @@ US Letter size (8.5 x 11) as well as ISO A4 size templates are available.
 
 For use with tablet writing apps, you'll need to first build the document, export the PDF file to your tablet and import it into the app of your choice.
 
-If you're going to be working off the actual LaTeX document, 
+If you're going to be working off the actual LaTeX document,
 and you're using [TexMaker](https://www.xm1math.net/texmaker/),
 
 I recommend doing 'File' -> 'New by copying an existing file'
@@ -26,7 +26,11 @@ Simple template for homework, notes, or lab reports.
 
 Features a dual header and footer. Header contains sequence page numbers (x of y); while Footer contains title, name, current page number, and space for an approximately 1" x 1" image - useful for logos or copyright QR codes
 
-![assignment-template](./images/assignment-template.png)
+![assignment-template-with-image](./images/assignment-template.png)
+
+Also works without images in the footer.
+
+![assignment-template-no-image](./images/assignment-template-no-image.jpg)
 
 ## Notability Grid
 
@@ -65,7 +69,7 @@ Useful for doing isometric drawings
 
 ## Notability Radial/Polar Log Graph
 
-( Missing A4 version !)
+( Missing A4 version
 
 Useful for working with polar coordinates.
 
@@ -78,7 +82,7 @@ Useful for working with polar coordinates.
 
 ( Missing A4 version )
 
-https://en.wikipedia.org/wiki/Smith_chart
+<https://en.wikipedia.org/wiki/Smith_chart>
 
 Used for Radio Frequency engineering.
 

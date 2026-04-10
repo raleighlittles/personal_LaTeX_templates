@@ -14,7 +14,6 @@
   includefoot
 ]{geometry}
 
-
 % --------------------------------------------------
 % Fonts & encoding
 % --------------------------------------------------
@@ -83,18 +82,21 @@
 }
 
 \fancyfoot[C]{%
-  Page \thepage
+  Page \thepage \hspace{1pt} of \hspace{1pt} \pageref{LastPage}
+  \hspace{20pt}---\hspace{20pt}
+  \NoteDate
 }
 
+% If you don't want to include an image in the footer, delete this entire "fancyfoot" section below!
 \fancyfoot[R]{%
   % Reserved space for a 300x300 px image (~3.1in x 3.1in)
   \begin{minipage}[c][1in][c]{1in}
     %\centering
-    % Uncomment to include an image:
     \includegraphics[width=0.75in,height=0.75in,keepaspectratio]{AssignmentTemplate-footer.png}
     \vspace{15pt}
   \end{minipage}
 }
+%%% Delete up to this line if you don't want an image in the footer
 
 % --------------------------------------------------
 % Rule lines
@@ -108,6 +110,10 @@
 \begin{document}
 
 \section{Your section name here}
+
+% Tips:
+
+% Use \clearpage to force figures to be on the next page, if they don't fit on the current page.
 
 \pagebreak
 
