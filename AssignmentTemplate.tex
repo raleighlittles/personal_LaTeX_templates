@@ -1,3 +1,12 @@
+% Simple Latex template for assignments, notes, or scratch work. 
+% Header includes fields for name, ID, class, date, and page number. 
+% Footer includes title, name, date, and page number. 
+%The header and footer are separated from the main body by horizontal lines. 
+% The main body has a large section title at the top left. 
+% The template uses the "fancyhdr" package for header and footer customization, and the "geometry" package for page layout. 
+% The "amsmath" package is included for math formatting, and the "graphicx" package is included for adding images. The "soul" package is included for highlighting text with \hl{}.
+% Copyright: Raleigh Littles <raleighlittles@arizona.edu>, 2026
+
 \documentclass[10pt]{article}
 
 % --------------------------------------------------
@@ -31,7 +40,6 @@
 \usepackage{mathtools}
 \usepackage{physics}
 \usepackage{siunitx}
-%\usepackage{draftwatermark}
 
 % --------------------------------------------------
 % Graphics & diagrams
@@ -40,6 +48,7 @@
 \usepackage{tikz}
 \usepackage{circuitikz}
 \usepackage{xcolor}
+\usepackage{soul} % for highlighting with \hl{}
 
 % --------------------------------------------------
 % Header / Footer
@@ -114,6 +123,18 @@
 % Tips:
 
 % Use \clearpage to force figures to be on the next page, if they don't fit on the current page.
+
+% For numbered equations, use the "equation" environment
+%
+% For unnumbered equations, use \[ ... \] or the "equation*" environment (requires amsmath)
+%
+% Use fbox for boxes around text, e.g. \fbox{ ... } or for math \boxed{ ... } (requires amsmath)
+% For colored boxes, define a custom colorbox:
+% \fcolorbox{red}{white}{Your text here}
+% Arguments: 1) border color, 2) background color, 3) content
+%
+% Highlight text using \hl{ ... } (requires soul package)
+
 
 \pagebreak
 
