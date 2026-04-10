@@ -44,11 +44,11 @@
       \coordinate (GridBottomRight) at (current page.south east);
 
       % Minor grid
-      \draw[step=\MinorStep, line width=0.2pt, opacity=0.25]
+      \draw[step=\MinorStep, line width=0.2pt, opacity=0.10]
         (GridTopLeft) grid (GridBottomRight);
 
       % Major grid
-      \draw[step=\MajorStep, line width=0.45pt, opacity=0.45]
+      \draw[step=\MajorStep, line width=0.45pt, opacity=0.20]
         (GridTopLeft) grid (GridBottomRight);
     \end{tikzpicture}%
   }%

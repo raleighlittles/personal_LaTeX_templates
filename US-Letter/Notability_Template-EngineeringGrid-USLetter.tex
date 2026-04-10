@@ -5,7 +5,7 @@
 \documentclass[11pt]{article}
 
 % --- Page size / margins (US Letter) ---
-\usepackage[letterpaper,margin=0.1in]{geometry}
+\usepackage[letterpaper,margin=0.1in,top=0.2in,headsep=0.2in,headheight=0.7in]{geometry}
 
 % --- Fonts & helpers ---
 \usepackage{lmodern}
@@ -30,7 +30,7 @@
 \newcommand{\MajorStep}{0.5in}  % heavy lines every 5 minor squares
 
 % Header band height reserved so the grid doesn't run under the header boxes
-\newcommand{\HeaderBandHeight}{0.5in}
+\newcommand{\HeaderBandHeight}{0.45in}
 
 \AddToShipoutPictureBG{%
   \AtPageLowerLeft{%
@@ -44,11 +44,11 @@
       \coordinate (GridBottomRight) at (current page.south east);
 
       % Minor grid
-      \draw[step=\MinorStep, line width=0.2pt, opacity=0.25]
+      \draw[step=\MinorStep, line width=0.2pt, opacity=0.10]
         (GridTopLeft) grid (GridBottomRight);
 
       % Major grid
-      \draw[step=\MajorStep, line width=0.45pt, opacity=0.45]
+      \draw[step=\MajorStep, line width=0.45pt, opacity=0.20]
         (GridTopLeft) grid (GridBottomRight);
     \end{tikzpicture}%
   }%
@@ -58,20 +58,19 @@
 \setlength{\parindent}{0pt}
 \newcommand{\HeaderBoxes}{%
   \vspace*{-0.25in} % pull up slightly if needed
-  \begin{center}
     \renewcommand{\arraystretch}{1.35}
-    \begin{tabularx}{\textwidth}{|X|X|X|X|}
-      \hline
-      \StudentField
-      \textit{\#0123456789} &
-      \textbf{\CourseField} &
-      \today &
-      \textbf{\TitleField} \\
-      \hline
-    \end{tabularx}
-  \end{center}
-  \vspace{0.15in}
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|}
+\hline
+\StudentField &
+\#0123456789 &
+\CourseField &
+\today &
+\textbf{\TitleField} \\
+\hline
+\end{tabularx}
 }
+  \vspace{0.15in}
+
 
 \begin{document}
 \HeaderBoxes
