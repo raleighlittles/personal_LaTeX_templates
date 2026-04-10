@@ -1,0 +1,208 @@
+%%%%% Scratch work template for Notability using LaTEX. Dual Smith chart (drawn with only TikZ), with multiple boxes at top of page for header fields.
+%%%%% Convert this to a PDF by building it in LaTEX, and then in Notability just import the location to that PDF.
+%%%%% Copyright: Raleigh Littles, 2026
+
+\documentclass[10pt]{article}
+
+% --- Page size / margins (US Letter) ---
+\usepackage[
+  letterpaper,
+  left=0.1in,right=0.1in,
+  top=0.6in,
+  bottom=0.6in,
+  headheight=0.5in,
+  headsep=0.20in
+]{geometry}
+
+% --- Fonts & helpers ---
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+
+% --- Drawing ---
+\usepackage{tikz}
+\usepackage{eso-pic}
+\usetikzlibrary{calc}
+
+% --- Header boxes ---
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+
+% ====== USER FIELDS ======
+\newcommand{\StudentField}{Raleigh Littles}
+\newcommand{\CourseField}{Class name}
+\newcommand{\DateField}{\today}
+\newcommand{\TitleField}{Note title} % leave empty for title
+
+% ====== SMITH CHART SETTINGS ======
+\newcommand{\GridTopOffsetIn}{0.6}
+
+% Impedance chart style
+\newcommand{\ZMinorLineWidth}{0.10pt}
+\newcommand{\ZMajorLineWidth}{0.20pt}
+\newcommand{\ZMinorOpacity}{0.5}
+\newcommand{\ZMajorOpacity}{0.15}
+
+% Admittance overlay style
+\newcommand{\YMinorLineWidth}{0.1pt}
+\newcommand{\YMajorLineWidth}{0.2pt}
+\newcommand{\YMinorOpacity}{0.5}
+\newcommand{\YMajorOpacity}{0.10}
+
+% Outer boundary
+\newcommand{\OuterLineWidth}{0.50pt}
+\newcommand{\OuterOpacity}{0.2}
+
+% ====== BACKGROUND: DUAL SMITH CHART ======
+\AddToShipoutPictureBG{%
+  \AtPageLowerLeft{%
+    \begin{tikzpicture}[remember picture,overlay]
+      \begin{scope}[shift={(current page.south west)}, x=1in, y=1in]
+
+        % Page geometry
+        \def\PageW{8.5}
+        \def\PageH{11.0}
+        \pgfmathsetmacro{\YTop}{\PageH - \GridTopOffsetIn}
+
+        % Only keep chart below the header
+        \clip (0,0) rectangle (\PageW,\YTop);
+
+        % Oversized chart placement
+        \pgfmathsetmacro{\Cx}{\PageW/2}
+        \pgfmathsetmacro{\Cy}{\YTop/2}
+        \pgfmathsetmacro{\ChartR}{max(\PageW,\YTop)*0.75}
+
+        % Draw in normalized Gamma-plane, then scale up
+        \begin{scope}[shift={({\Cx},{\Cy})}, scale=\ChartR]
+
+          % Outer boundary
+          \draw[line width=\OuterLineWidth, opacity=\OuterOpacity] (0,0) circle[radius=1];
+
+          % Real axis
+          \draw[line width=\ZMajorLineWidth, opacity=\ZMajorOpacity] (-1,0) -- (1,0);
+
+          % Clip internal curves to the unit circle
+          \begin{scope}
+            \clip (0,0) circle[radius=1];
+
+            % ==================================================
+            % IMPEDANCE SMITH CHART
+            % ==================================================
+
+            % Constant resistance circles (minor)
+            \foreach \rr in {0.1,0.3,0.7,1.5,3,7} {
+              \draw[line width=\ZMinorLineWidth, opacity=\ZMinorOpacity]
+                ({\rr/(1+\rr)},0) circle[radius={1/(1+\rr)}];
+            }
+
+            % Constant resistance circles (major)
+            \foreach \rr in {0,0.2,0.5,1,2,5} {
+              \draw[line width=\ZMajorLineWidth, opacity=\ZMajorOpacity]
+                ({\rr/(1+\rr)},0) circle[radius={1/(1+\rr)}];
+            }
+
+            % Constant reactance circles (minor, +)
+            \foreach \xx in {0.1,0.3,0.7,1.5,3,7} {
+              \draw[line width=\ZMinorLineWidth, opacity=\ZMinorOpacity]
+                (1,{1/\xx}) circle[radius={1/abs(\xx)}];
+            }
+
+            % Constant reactance circles (minor, -)
+            \foreach \xx in {-0.1,-0.3,-0.7,-1.5,-3,-7} {
+              \draw[line width=\ZMinorLineWidth, opacity=\ZMinorOpacity]
+                (1,{1/\xx}) circle[radius={1/abs(\xx)}];
+            }
+
+            % Constant reactance circles (major, +)
+            \foreach \xx in {0.2,0.5,1,2,5} {
+              \draw[line width=\ZMajorLineWidth, opacity=\ZMajorOpacity]
+                (1,{1/\xx}) circle[radius={1/abs(\xx)}];
+            }
+
+            % Constant reactance circles (major, -)
+            \foreach \xx in {-0.2,-0.5,-1,-2,-5} {
+              \draw[line width=\ZMajorLineWidth, opacity=\ZMajorOpacity]
+                (1,{1/\xx}) circle[radius={1/abs(\xx)}];
+            }
+
+            % ==================================================
+            % ADMITTANCE OVERLAY = IMPEDANCE CHART ROTATED 180°
+            % ==================================================
+            \begin{scope}[rotate=180]
+
+              % Constant conductance circles (minor)
+              \foreach \rr in {0.1,0.3,0.7,1.5,3,7} {
+                \draw[line width=\YMinorLineWidth, opacity=\YMinorOpacity, dashed]
+                  ({\rr/(1+\rr)},0) circle[radius={1/(1+\rr)}];
+              }
+
+              % Constant conductance circles (major)
+              \foreach \rr in {0,0.2,0.5,1,2,5} {
+                \draw[line width=\YMajorLineWidth, opacity=\YMajorOpacity, dashed]
+                  ({\rr/(1+\rr)},0) circle[radius={1/(1+\rr)}];
+              }
+
+              % Constant susceptance circles (minor, +)
+              \foreach \xx in {0.1,0.3,0.7,1.5,3,7} {
+                \draw[line width=\YMinorLineWidth, opacity=\YMinorOpacity, dashed]
+                  (1,{1/\xx}) circle[radius={1/abs(\xx)}];
+              }
+
+              % Constant susceptance circles (minor, -)
+              \foreach \xx in {-0.1,-0.3,-0.7,-1.5,-3,-7} {
+                \draw[line width=\YMinorLineWidth, opacity=\YMinorOpacity, dashed]
+                  (1,{1/\xx}) circle[radius={1/abs(\xx)}];
+              }
+
+              % Constant susceptance circles (major, +)
+              \foreach \xx in {0.2,0.5,1,2,5} {
+                \draw[line width=\YMajorLineWidth, opacity=\YMajorOpacity, dashed]
+                  (1,{1/\xx}) circle[radius={1/abs(\xx)}];
+              }
+
+              % Constant susceptance circles (major, -)
+              \foreach \xx in {-0.2,-0.5,-1,-2,-5} {
+                \draw[line width=\YMajorLineWidth, opacity=\YMajorOpacity, dashed]
+                  (1,{1/\xx}) circle[radius={1/abs(\xx)}];
+              }
+
+            \end{scope}
+          \end{scope}
+
+          % Endpoint markers
+          \fill[opacity=\OuterOpacity] (-1,0) circle[radius=0.010];
+          \fill[opacity=\OuterOpacity] ( 1,0) circle[radius=0.010];
+
+        \end{scope}
+      \end{scope}
+    \end{tikzpicture}%
+  }%
+}
+
+% ====== HEADER (no page numbers) ======
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancyhead[C]{%
+  \renewcommand{\arraystretch}{1.35}%
+  \setlength{\tabcolsep}{6pt}%
+  \begin{tabularx}{\textwidth}{|X|X|X|X|}
+    \hline
+    \StudentField &
+    \textbf{\CourseField} &
+    \DateField &
+    \TitleField \\
+    \hline
+  \end{tabularx}%
+}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\null
+% Oversized dual Smith chart background below the header.
+
+\end{document}
