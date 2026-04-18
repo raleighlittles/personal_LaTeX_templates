@@ -102,3 +102,8 @@ Randomized magnetic field diagram that covers entire page. Changeable via seed.
 
 Similar to engineering grid but with logarithm graph sizes.
 
+![semi-log-grid](./images/semi-log-paper.png)
+
+## Notability Bode Plot background (WIP)
+
+2 bode plots per page (arranged vertically). Needs better fixing of opacity.

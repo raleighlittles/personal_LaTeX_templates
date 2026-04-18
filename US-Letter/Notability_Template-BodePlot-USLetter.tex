@@ -1,0 +1,301 @@
+\documentclass[10pt]{article}
+
+% --- Page setup ---
+\usepackage[
+  letterpaper,
+  left=0.4in,right=0.4in,
+  top=1.0in,
+  bottom=0.5in,
+  headheight=0.7in,
+  headsep=0.18in
+]{geometry}
+
+% --- Fonts ---
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+
+% --- Drawing ---
+\usepackage{tikz}
+\usepackage{eso-pic}
+\usetikzlibrary{calc}
+
+% --- Header ---
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+
+% ===== USER FIELDS =====
+\newcommand{\StudentField}{Raleigh Littles }
+\newcommand{\CourseField}{Class title}
+\newcommand{\DateField}{\today}
+\newcommand{\TitleField}{Note title}
+
+% ===== PAGE / GRID SETTINGS =====
+\newcommand{\GridTopOffsetIn}{1}
+
+% Total usable page size in inches
+\newcommand{\PageWidthIn}{8.5}
+\newcommand{\PageHeightIn}{11.0}
+
+% Bode plot block geometry
+% Two full bode plots per page; each bode plot has magnitude + phase
+\newcommand{\LeftMarginIn}{0.7}
+\newcommand{\RightMarginIn}{0.2}
+
+\newcommand{\PlotWidthIn}{7.40}
+
+% First Bode plot (top pair)
+\newcommand{\MagOneBottom}{7.00}
+\newcommand{\MagHeight}{2.35}
+\newcommand{\GapMagPhase}{0.1}
+\newcommand{\PhaseHeight}{1.00}
+
+% Second Bode plot (bottom pair)
+\newcommand{\MagTwoBottom}{3.10}
+
+% Log-frequency scale
+\newcommand{\NumDecades}{4}   % number of decades across width
+
+% Linear grid inside each panel
+\newcommand{\MinorYStepMag}{0.225}
+\newcommand{\MajorYStepMag}{0.45}
+\newcommand{\MinorYStepPhase}{0.23}
+\newcommand{\MajorYStepPhase}{0.46}
+
+% Styling
+\newcommand{\MinorLineWidth}{0.1pt}
+\newcommand{\MidLineWidth}{0.2pt}
+\newcommand{\MajorLineWidth}{0.25pt}
+\newcommand{\BorderLineWidth}{0.3pt}
+
+\newcommand{\MinorOpacity}{0.05}
+\newcommand{\MidOpacity}{0.1}
+\newcommand{\MajorOpacity}{0.15}
+\newcommand{\BorderOpacity}{0.2}
+
+% Axis label styling
+\newcommand{\SmallLabelScale}{0.50}
+
+% ===== Helper macro: draw one semilog-x Bode panel =====
+\newcommand{\DrawBodePanel}[4]{%
+  % #1 = x left
+  % #2 = y bottom
+  % #3 = width
+  % #4 = height
+
+  % Outer border
+  \draw[line width=\BorderLineWidth, opacity=\BorderOpacity]
+    (#1,#2) rectangle ++(#3,#4);
+
+  % ----- Horizontal linear grid -----
+  \pgfmathtruncatemacro{\NMinorY}{ceil(#4/\MinorYStepMag)+2}
+  \foreach \k in {0,...,\NMinorY} {
+    \pgfmathsetmacro{\yy}{#2 + \k*\MinorYStepMag}
+\pgfmathsetmacro{\Ymax}{#2 + #4}
+\ifdim \yy pt < \Ymax pt
+      \draw[line width=\MinorLineWidth, opacity=\MinorOpacity]
+        (#1,\yy) -- ({#1 + #3},\yy);
+    \fi
+  }
+
+  \pgfmathtruncatemacro{\NMajorY}{ceil(#4/\MajorYStepMag)+2}
+  \foreach \k in {0,...,\NMajorY} {
+    \pgfmathsetmacro{\yy}{#2 + \k*\MajorYStepMag}
+\pgfmathsetmacro{\Ymax}{#2 + #4}
+\ifdim \yy pt < \Ymax pt
+      \draw[line width=\MajorLineWidth, opacity=\MajorOpacity]
+        (#1,\yy) -- ({#1 + #3},\yy);
+    \fi
+  }
+
+  % ----- Vertical semilog grid -----
+  % For each decade d = 0,1,...,NumDecades-1
+  % place lines at m = 1,...,9 with x = (d + log10(m))/NumDecades * width
+  \foreach \d in {0,...,3} {
+    \foreach \m in {1,...,9} {
+      \pgfmathsetmacro{\xpos}{#1 + (#3/\NumDecades)*(\d + ln(\m)/ln(10))}
+      \ifnum\m=1
+        \draw[line width=\MajorLineWidth, opacity=\MajorOpacity]
+          (\xpos,#2) -- (\xpos,{#2 + #4});
+      \else
+        \ifnum\m=2
+          \draw[line width=\MidLineWidth, opacity=\MidOpacity]
+            (\xpos,#2) -- (\xpos,{#2 + #4});
+        \else
+          \ifnum\m=5
+            \draw[line width=\MidLineWidth, opacity=\MidOpacity]
+              (\xpos,#2) -- (\xpos,{#2 + #4});
+          \else
+            \draw[line width=\MinorLineWidth, opacity=\MinorOpacity]
+              (\xpos,#2) -- (\xpos,{#2 + #4});
+          \fi
+        \fi
+      \fi
+    }
+  }
+
+  % Final decade boundary at right edge
+  \draw[line width=\MajorLineWidth, opacity=\MajorOpacity]
+    ({#1 + #3},#2) -- ({#1 + #3},{#2 + #4});
+}
+
+% ===== Helper macro: draw one phase panel =====
+\newcommand{\DrawPhasePanel}[4]{%
+  % #1 = x left
+  % #2 = y bottom
+  % #3 = width
+  % #4 = height
+
+  % Outer border
+  \draw[line width=\BorderLineWidth, opacity=\BorderOpacity]
+    (#1,#2) rectangle ++(#3,#4);
+
+  % ----- Horizontal linear grid -----
+  \pgfmathtruncatemacro{\NMinorY}{ceil(#4/\MinorYStepPhase)+2}
+  \foreach \k in {0,...,\NMinorY} {
+    \pgfmathsetmacro{\yy}{#2 + \k*\MinorYStepPhase}
+\pgfmathsetmacro{\Ymax}{#2 + #4}
+\pgfmathsetmacro{\Ymax}{#2 + #4}
+\pgfmathsetmacro{\Ymax}{#2 + #4}
+\pgfmathsetmacro{\Ymax}{#2 + #4}
+\ifdim \yy pt < \Ymax pt
+      \draw[line width=\MinorLineWidth, opacity=\MinorOpacity]
+        (#1,\yy) -- ({#1 + #3},\yy);
+    \fi
+  }
+
+  \pgfmathtruncatemacro{\NMajorY}{ceil(#4/\MajorYStepPhase)+2}
+  \foreach \k in {0,...,\NMajorY} {
+    \pgfmathsetmacro{\yy}{#2 + \k*\MajorYStepPhase}
+\pgfmathsetmacro{\Ymax}{#2 + #4}
+\pgfmathsetmacro{\Ymax}{#2 + #4}
+\pgfmathsetmacro{\Ymax}{#2 + #4}
+\ifdim \yy pt < \Ymax pt
+      \draw[line width=\MajorLineWidth, opacity=\MajorOpacity]
+        (#1,\yy) -- ({#1 + #3},\yy);
+    \fi
+  }
+
+  % ----- Vertical semilog grid -----
+  \foreach \d in {0,...,3} {
+    \foreach \m in {1,...,9} {
+      \pgfmathsetmacro{\xpos}{#1 + (#3/\NumDecades)*(\d + ln(\m)/ln(10))}
+      \ifnum\m=1
+        \draw[line width=\MajorLineWidth, opacity=\MajorOpacity]
+          (\xpos,#2) -- (\xpos,{#2 + #4});
+      \else
+        \ifnum\m=2
+          \draw[line width=\MidLineWidth, opacity=\MidOpacity]
+            (\xpos,#2) -- (\xpos,{#2 + #4});
+        \else
+          \ifnum\m=5
+            \draw[line width=\MidLineWidth, opacity=\MidOpacity]
+              (\xpos,#2) -- (\xpos,{#2 + #4});
+          \else
+            \draw[line width=\MinorLineWidth, opacity=\MinorOpacity]
+              (\xpos,#2) -- (\xpos,{#2 + #4});
+          \fi
+        \fi
+      \fi
+    }
+  }
+
+  % Final decade boundary
+  \draw[line width=\MajorLineWidth, opacity=\MajorOpacity]
+    ({#1 + #3},#2) -- ({#1 + #3},{#2 + #4});
+}
+
+% ===== BACKGROUND =====
+\AddToShipoutPictureBG{%
+  \AtPageLowerLeft{%
+    \begin{tikzpicture}[remember picture,overlay]
+      \begin{scope}[shift={(current page.south west)}, x=1in, y=1in]
+
+        % Clip below header
+        \pgfmathsetmacro{\YTop}{\PageHeightIn - \GridTopOffsetIn}
+        \clip (0,0) rectangle (\PageWidthIn,\YTop);
+
+        % Plot x origin
+        \pgfmathsetmacro{\XLeft}{\LeftMarginIn}
+
+        % ---------- TOP BODE PLOT ----------
+        \pgfmathsetmacro{\PhaseOneBottom}{\MagOneBottom - \GapMagPhase - \PhaseHeight}
+
+        \DrawBodePanel{\XLeft}{\MagOneBottom}{\PlotWidthIn}{\MagHeight}
+        \DrawPhasePanel{\XLeft}{\PhaseOneBottom}{\PlotWidthIn}{\PhaseHeight}
+
+        % Labels: top bode
+        \node[anchor=east, opacity=0.2, scale=\SmallLabelScale]
+          at ({\XLeft - 0.08},{\MagOneBottom + 0.5*\MagHeight}) {Magnitude};
+        \node[anchor=east, opacity=0.2, scale=\SmallLabelScale]
+          at ({\XLeft - 0.08},{\PhaseOneBottom + 0.5*\PhaseHeight}) {Phase};
+
+        % ---------- BOTTOM BODE PLOT ----------
+        \pgfmathsetmacro{\PhaseTwoBottom}{\MagTwoBottom - \GapMagPhase - \PhaseHeight}
+
+        \DrawBodePanel{\XLeft}{\MagTwoBottom}{\PlotWidthIn}{\MagHeight}
+        \DrawPhasePanel{\XLeft}{\PhaseTwoBottom}{\PlotWidthIn}{\PhaseHeight}
+
+        % Labels: bottom bode
+        \node[anchor=east, opacity=0.2, scale=\SmallLabelScale]
+          at ({\XLeft - 0.08},{\MagTwoBottom + 0.5*\MagHeight}) {Magnitude};
+        \node[anchor=east, opacity=0.2, scale=\SmallLabelScale]
+          at ({\XLeft - 0.08},{\PhaseTwoBottom + 0.5*\PhaseHeight}) {Phase};
+
+        % ---------- Frequency captions ----------
+        % Decade labels shown below each phase panel
+        \foreach \k in {0,...,4} {
+          \pgfmathsetmacro{\xx}{\XLeft + \k*(\PlotWidthIn/\NumDecades)}
+
+          \node[anchor=north, opacity=0.2, scale=\SmallLabelScale]
+            at (\xx,{\PhaseOneBottom - 0.06}) {$10^{\k}$};
+
+          \node[anchor=north, opacity=0.2, scale=\SmallLabelScale]
+            at (\xx,{\PhaseTwoBottom - 0.06}) {$10^{\k}$};
+        }
+
+        % x-axis titles
+        \node[anchor=north, opacity=0.2, scale=0.85]
+          at ({\XLeft + 0.5*\PlotWidthIn},{\PhaseOneBottom - 0.28})
+          {f};
+        \node[anchor=north, opacity=0.2, scale=0.85]
+          at ({\XLeft + 0.5*\PlotWidthIn},{\PhaseTwoBottom - 0.28})
+          {f};
+
+      \end{scope}
+    \end{tikzpicture}%
+  }%
+}
+
+% ===== HEADER =====
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancyhead[C]{%
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|}
+\hline
+\StudentField &
+\#0123456789 &
+\CourseField &
+\today &
+\textbf{\TitleField} \\
+\hline
+\end{tabularx}
+}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+
+% Two Bode plots per page:
+% top = magnitude + phase
+% bottom = magnitude + phase
+
+\null
+
+\end{document}
