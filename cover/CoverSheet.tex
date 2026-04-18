@@ -1,0 +1,94 @@
+\documentclass[10pt]{article}
+
+% Common packages
+\usepackage[a4paper,margin=0.5in]{geometry}
+\usepackage{graphicx}
+\usepackage[table]{xcolor}
+\usepackage{array}
+\usepackage{setspace}
+\usepackage{tgschola}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{svg}
+
+\pagestyle{empty}
+\setstretch{1.1}
+
+\begin{document}
+
+\begin{titlepage}
+\centering
+
+% Top logo
+\vspace*{0.5cm}
+\includegraphics[width=0.46\textwidth]{school-logo.png}
+
+\vspace{0.8cm}
+
+% Top horizontal line
+\noindent\rule{0.68\textwidth}{0.4pt}
+
+\vspace{1.1cm}
+
+{\Large \textsc{Department name}}\\[0.25cm]
+{\normalsize Class Name with title}
+
+\vspace{1.4cm}
+
+{\Large Assignment Name Here}
+
+\vspace{1.6cm}
+
+% Book section
+\noindent
+\begin{minipage}[c]{0.68\textwidth}
+    \centering
+    {\normalsize
+    \textit{Electric Circuits -- Modified Mastering Engineering with Pearson eText Access Code}\\[0.3em]
+    ISBN: 978-0-000000-00-0
+    }
+\end{minipage}
+\hfill
+\begin{minipage}[c]{0.18\textwidth}
+    \centering
+    \fcolorbox{black!30}{white}{%
+        \includegraphics[width=\linewidth,height=1.5in,keepaspectratio]{book_cover}
+    }
+\end{minipage}
+
+\vspace{1.4cm}
+
+% Student info gray box
+\noindent
+\colorbox[gray]{0.92}{%
+  \parbox{0.72\textwidth}{%
+    \centering
+    \vspace{0.25cm}
+    {\normalsize Student Name: Your Name Here}\\[0.2cm]
+    {\normalsize Student ID: 12345678}\\[0.2cm]
+    {\normalsize Student Email Address: your.email@example.com}
+    \vspace{0.25cm}
+  }%
+}
+
+\vfill
+
+% QR code
+\includegraphics[width=1in,height=1in]{qr-code.png}
+
+\vspace{0.6cm}
+
+% Bottom horizontal line
+\noindent\rule{0.68\textwidth}{0.4pt}
+
+\vspace{0.25cm}
+
+{\Large Semester and Year}
+
+\vspace{0.35cm}
+
+{\normalsize \today}
+
+\end{titlepage}
+
+\end{document}
