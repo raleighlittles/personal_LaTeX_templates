@@ -31,13 +31,21 @@ def fetch_metadata(canonical: str):
         if converted:
             candidates.append(converted)
 
+    last_exception = None
     for candidate in candidates:
         try:
             data = isbnlib.meta(candidate)
             if data:
                 return data
-        except Exception:
+        except Exception as exc:
+            last_exception = exc
             continue
+
+    if last_exception is not None:
+        print(
+            f"Metadata lookup failed: {last_exception}",
+            file=sys.stderr,
+        )
     return None
 
 
