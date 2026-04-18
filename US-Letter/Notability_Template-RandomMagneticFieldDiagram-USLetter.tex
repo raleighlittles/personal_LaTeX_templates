@@ -1,0 +1,132 @@
+% Notability template for random magnetic field diagram (US Letter)
+% Copyright: Raleigh Littles, 2026
+$%%%%% Scratch work template for Notability using LaTEX. Random magnetic field diagram with \otimes and \odot symbols, drawn with only TikZ. Multiple boxes at top of page for header fields.
+%%%%% Convert this to a PDF by building it in LaTEX, and then in Notability just import the location to that PDF.
+\documentclass[10pt]{article}
+
+% --- Page size / margins (US Letter) ---
+\usepackage[
+  letterpaper,
+  left=0.1in,right=0.1in,
+  top=0.75in,
+  bottom=0.6in,
+  headheight=0.5in,
+  headsep=0.20in
+]{geometry}
+
+% --- Fonts & helpers ---
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+
+% --- Drawing ---
+\usepackage{tikz}
+\usepackage{eso-pic}
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+
+% ====== USER FIELDS ======
+\newcommand{\StudentField}{Raleigh Littles}
+\newcommand{\CourseField}{Class Name}
+\newcommand{\DateField}{\today}
+\newcommand{\TitleField}{Note title} % leave empty for title
+
+% ====== SYMBOL GRID SETTINGS ======
+\newcommand{\GridTopOffsetIn}{0.4}
+
+% Symbol spacing
+\newcommand{\SymbolXStep}{0.35}  % horizontal spacing in inches
+\newcommand{\SymbolYStep}{0.35}  % vertical spacing in inches
+
+% Symbol appearance
+\newcommand{\SymbolOpacity}{0.15}
+\newcommand{\SymbolScale}{2}
+
+% Optional jitter (set to 0 for perfectly rigid placement)
+\newcommand{\JitterAmount}{0.00}
+
+% ====== BACKGROUND: MAGNETIC FIELD SYMBOL GRID ======
+\AddToShipoutPictureBG{%
+  \AtPageLowerLeft{%
+    \begin{tikzpicture}[remember picture,overlay]
+      \begin{scope}[shift={(current page.south west)}, x=1in, y=1in]
+
+        % Page size in inches
+        \def\PageW{8.5}
+        \def\PageH{11.0}
+        \pgfmathsetmacro{\YTop}{\PageH - \GridTopOffsetIn}
+
+        % Clip below header
+        \clip (0,0) rectangle (\PageW,\YTop);
+
+        % Random seed (change this number if you want a different pattern)
+        \pgfmathsetseed{0123456}
+
+        % Number of columns/rows
+        \pgfmathtruncatemacro{\NCols}{ceil(\PageW/\SymbolXStep)+1}
+        \pgfmathtruncatemacro{\NRows}{ceil(\YTop/\SymbolYStep)+1}
+
+        % Draw evenly spaced random mix of \otimes and \odot
+        \foreach \r in {0,...,\NRows} {
+          \foreach \c in {0,...,\NCols} {
+          
+            \newcommand{\GridXMargin}{0.20} % left/right margin in inches
+            \newcommand{\GridYMargin}{0.20} % bottom margin (optional)
+
+            \pgfmathsetmacro{\xbase}{\GridXMargin + \c*\SymbolXStep}
+            \pgfmathsetmacro{\ybase}{\GridYMargin + \r*\SymbolYStep}
+
+            % Optional slight jitter
+            \pgfmathsetmacro{\jx}{(2*rnd-1)*\JitterAmount}
+            \pgfmathsetmacro{\jy}{(2*rnd-1)*\JitterAmount}
+
+            % Random symbol choice
+            \pgfmathparse{rnd < 0.5 ? 1 : 0}
+            \let\IntoPage\pgfmathresult
+
+            \ifnum\IntoPage=1
+              \node[opacity=\SymbolOpacity, scale=\SymbolScale]
+                at ({\xbase+\jx},{\ybase+\jy}) {$\otimes$};
+            \else
+              \node[opacity=\SymbolOpacity, scale=\SymbolScale]
+                at ({\xbase+\jx},{\ybase+\jy}) {$\odot$};
+            \fi
+          }
+        }
+
+      \end{scope}
+    \end{tikzpicture}%
+  }%
+}
+
+% ====== HEADER (no page numbers) ======
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancyhead[C]{%
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|}
+\hline
+\StudentField &
+\#0123456789 &
+\CourseField &
+\today &
+\textbf{\TitleField} \\
+\hline
+\end{tabularx}
+}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\null
+
+% Magnetic field tracing template:
+% \otimes = into the page
+% \odot   = out of the page
+
+\end{document}

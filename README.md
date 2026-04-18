@@ -69,7 +69,7 @@ Useful for doing isometric drawings
 
 ## Notability Radial/Polar Log Graph
 
-( Missing A4 version
+( Missing A4 version )
 
 Useful for working with polar coordinates.
 
@@ -91,3 +91,14 @@ Dual variant as well.
 ![Single variant](./images/smith-chart.jpg)
 
 ![Dual smith chart](./images/dual-smith-chart.jpg)
+
+## Notability Magnetic Field Diagram
+
+Randomized magnetic field diagram that covers entire page. Changeable via seed.
+
+![magnetic-field-template](./images/magnetic-field-diagram.png)
+
+## Notability Semi-Logarithmic Graph
+
+Similar to engineering grid but with logarithm graph sizes.
+

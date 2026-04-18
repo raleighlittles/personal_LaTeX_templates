@@ -1,0 +1,168 @@
+%%%%% Scratch work template for Notability using LaTEX. Engineering grid with logarithmic grid sizes instead.
+%%%%% Copyright: Raleigh Littles, 2026
+\documentclass[10pt]{article}
+
+% --- Page size / margins (US Letter) ---
+\usepackage[
+  letterpaper,
+  left=0.1in,right=0.1in,
+  top=0.75in,
+  bottom=0.6in,
+  headheight=0.5in,
+  headsep=0.2in
+]{geometry}
+
+% --- Fonts & helpers ---
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+
+% --- Drawing ---
+\usepackage{tikz}
+\usepackage{eso-pic}
+
+% --- Header boxes ---
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+
+% ====== USER FIELDS ======
+\newcommand{\StudentField}{Raleigh Littles}
+\newcommand{\CourseField}{Class title}
+\newcommand{\DateField}{\today}
+\newcommand{\TitleField}{Note title} % leave empty for title
+
+% ====== GRID SETTINGS ======
+\newcommand{\GridTopOffsetIn}{0.4}
+
+% X-direction: standard linear engineering grid
+\newcommand{\MinorXStep}{0.10}   % inches
+\newcommand{\MajorXStep}{0.50}   % inches
+
+% Y-direction: semilog decades
+% Height of one full decade on the page
+\newcommand{\DecadeHeight}{1.20} % inches per decade
+
+% Styling
+\newcommand{\MinorLineWidth}{0.18pt}
+\newcommand{\MidLineWidth}{0.30pt}
+\newcommand{\MajorLineWidth}{0.48pt}
+
+\newcommand{\MinorOpacity}{0.05}
+\newcommand{\MidOpacity}{0.1}
+\newcommand{\MajorOpacity}{0.15}
+
+% ====== BACKGROUND: SEMILOG GRID ======
+\AddToShipoutPictureBG{%
+  \AtPageLowerLeft{%
+    \begin{tikzpicture}[remember picture,overlay]
+      \begin{scope}[shift={(current page.south west)}, x=1in, y=1in]
+
+        % Page size in inches
+        \def\PageW{8.5}
+        \def\PageH{11.0}
+        \pgfmathsetmacro{\YTop}{\PageH - \GridTopOffsetIn}
+
+        % Clip below the header
+        \clip (0,0) rectangle (\PageW,\YTop);
+
+        % ------------------------------------------
+        % Vertical lines: standard linear engineering grid
+        % ------------------------------------------
+        \pgfmathtruncatemacro{\NMinorX}{ceil(\PageW/\MinorXStep)+2}
+        \foreach \k in {0,...,\NMinorX} {
+          \pgfmathsetmacro{\x}{\k*\MinorXStep}
+          \draw[line width=\MinorLineWidth, opacity=\MinorOpacity]
+            (\x,0) -- (\x,\YTop);
+        }
+
+        \pgfmathtruncatemacro{\NMajorX}{ceil(\PageW/\MajorXStep)+2}
+        \foreach \k in {0,...,\NMajorX} {
+          \pgfmathsetmacro{\x}{\k*\MajorXStep}
+          \draw[line width=\MajorLineWidth, opacity=\MajorOpacity]
+            (\x,0) -- (\x,\YTop);
+        }
+
+        % ------------------------------------------
+        % Horizontal lines: true semilog spacing
+        % Within each decade, y = DecadeHeight * log10(m)
+        % for m = 1,...,9, then next decade repeats.
+        % ------------------------------------------
+        \pgfmathtruncatemacro{\NDecades}{ceil(\YTop/\DecadeHeight)+1}
+
+        \foreach \d in {0,...,\NDecades} {
+          \foreach \m in {1,...,9} {
+
+            % y-position for this subdivision
+            \pgfmathsetmacro{\y}{(\d + ln(\m)/ln(10))*\DecadeHeight}
+
+            % Draw only if it lands on the page
+            \ifdim \y pt < \YTop pt
+
+              % Style:
+              % m=1 -> major decade line
+              % m=2 or m=5 -> medium
+              % otherwise minor
+              \ifnum\m=1
+                \draw[line width=\MajorLineWidth, opacity=\MajorOpacity]
+                  (0,\y) -- (\PageW,\y);
+              \else
+                \ifnum\m=2
+                  \draw[line width=\MidLineWidth, opacity=\MidOpacity]
+                    (0,\y) -- (\PageW,\y);
+                \else
+                  \ifnum\m=5
+                    \draw[line width=\MidLineWidth, opacity=\MidOpacity]
+                      (0,\y) -- (\PageW,\y);
+                  \else
+                    \draw[line width=\MinorLineWidth, opacity=\MinorOpacity]
+                      (0,\y) -- (\PageW,\y);
+                  \fi
+                \fi
+              \fi
+
+            \fi
+          }
+        }
+
+        % Top decade boundary at 10 if it fits
+        \foreach \d in {1,...,\NDecades} {
+          \pgfmathsetmacro{\yTopLine}{\d*\DecadeHeight}
+          \ifdim \yTopLine pt < \YTop pt
+            \draw[line width=\MajorLineWidth, opacity=\MajorOpacity]
+              (0,\yTopLine) -- (\PageW,\yTopLine);
+          \fi
+        }
+
+      \end{scope}
+    \end{tikzpicture}%
+  }%
+}
+
+% ====== HEADER (no page numbers) ======
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancyhead[C]{%
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|}
+\hline
+\StudentField &
+\#0123456789 &
+\CourseField &
+\today &
+\textbf{\TitleField} \\
+\hline
+\end{tabularx}
+}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+% Notes start here.
+\null
+
+\end{document}
