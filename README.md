@@ -107,3 +107,7 @@ Similar to engineering grid but with logarithm graph sizes.
 ## Notability Bode Plot background (WIP)
 
 2 bode plots per page (arranged vertically). Needs better fixing of opacity.
+
+## Notability Feynman diagram (WIP)
+
+<https://en.wikipedia.org/wiki/Feynman_diagram>

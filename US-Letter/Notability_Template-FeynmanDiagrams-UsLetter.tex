@@ -1,0 +1,353 @@
+\documentclass[10pt]{article}
+
+% --- Page setup ---
+\usepackage[
+  letterpaper,
+  left=0.45in,right=0.45in,
+  top=0.8in,
+  bottom=0.40in,
+  headheight=0.5in,
+  headsep=0.2in
+]{geometry}
+
+% --- Fonts ---
+\usepackage{lmodern}
+\usepackage[T1]{fontenc}
+\usepackage{microtype}
+\usepackage{amsmath}
+
+% --- Drawing ---
+\usepackage{tikz}
+\usepackage{eso-pic}
+\usetikzlibrary{decorations.pathmorphing,arrows.meta,calc}
+
+% --- Header ---
+\usepackage{fancyhdr}
+\usepackage{tabularx}
+
+% ===== USER FIELDS =====
+\newcommand{\StudentField}{Raleigh Littles}
+\newcommand{\CourseField}{Class Name}
+\newcommand{\DateField}{\today}
+\newcommand{\TitleField}{Note Title}
+
+% ===== TEMPLATE SETTINGS =====
+\newcommand{\GridTopOffsetIn}{1.10}
+\newcommand{\DiagramOpacity}{0.15}
+\newcommand{\DiagramSeed}{220} % TODO: Randomize this
+
+% 4 rows x 2 columns
+\newcommand{\NumCols}{2}
+\newcommand{\NumRows}{4}
+
+% Box layout
+\newcommand{\BoxGapX}{0.28}
+\newcommand{\BoxGapY}{0.18}
+\newcommand{\BoxW}{4}
+\newcommand{\BoxH}{2}
+
+% ===== Drawing styles =====
+\tikzset{
+  fermion/.style={
+    line width=0.9pt,
+    -{Latex[length=2.2mm,width=1.5mm]}
+  },
+  antifermion/.style={
+    line width=0.9pt,
+    {Latex[length=2.2mm,width=1.5mm]}-
+  },
+  photon/.style={
+    line width=0.2pt,
+    decorate,
+    decoration={snake,amplitude=1.6pt,segment length=5.2pt}
+  },
+  gluon/.style={
+    line width=0.2pt,
+    decorate,
+    decoration={coil,amplitude=1.7pt,segment length=4.0pt}
+  },
+  scalar/.style={
+    dashed,
+    line width=0.2pt
+  },
+  vertex/.style={
+    circle, fill, inner sep=1.1pt
+  },
+  borderbox/.style={
+    line width=0.20pt
+  },
+  particlelabel/.style={
+    fill=white,
+    fill opacity=0.2,
+    text opacity=0.2,
+    inner sep=1.0pt,
+    font=\scriptsize
+  }
+}
+
+% ===== 8 diagram macros =====
+
+\newcommand{\DiagramA}{%
+  % e- e- scattering
+  \draw[fermion] (0.08,0.78) -- (0.42,0.58)
+    node[pos=0.22, above left, particlelabel] {$e^-$};
+  \draw[fermion] (0.08,0.22) -- (0.42,0.42)
+    node[pos=0.22, below left, particlelabel] {$e^-$};
+  \draw[fermion] (0.58,0.58) -- (0.92,0.78)
+    node[pos=0.80, above right, particlelabel] {$e^-$};
+  \draw[fermion] (0.58,0.42) -- (0.92,0.22)
+    node[pos=0.80, below right, particlelabel] {$e^-$};
+  \draw[photon] (0.42,0.58) -- (0.58,0.42)
+    node[pos=0.50, right, particlelabel] {$\gamma$};
+  \node[vertex] at (0.42,0.58) {};
+  \node[vertex] at (0.58,0.42) {};
+}
+
+\newcommand{\DiagramB}{%
+  % e- e+ -> gamma -> mu- mu+
+  \draw[fermion] (0.10,0.76) -- (0.48,0.50)
+    node[pos=0.22, above left, particlelabel] {$e^-$};
+  \draw[antifermion] (0.10,0.24) -- (0.48,0.50)
+    node[pos=0.22, below left, particlelabel] {$e^+$};
+  \draw[photon] (0.48,0.50) -- (0.76,0.50)
+    node[pos=0.50, above, particlelabel] {$\gamma$};
+  \draw[fermion] (0.76,0.50) -- (0.92,0.76)
+    node[pos=0.82, above right, particlelabel] {$\mu^-$};
+  \draw[antifermion] (0.76,0.50) -- (0.92,0.24)
+    node[pos=0.82, below right, particlelabel] {$\mu^+$};
+  \node[vertex] at (0.48,0.50) {};
+  \node[vertex] at (0.76,0.50) {};
+}
+
+\newcommand{\DiagramC}{%
+  % Compton scattering
+  \draw[fermion] (0.08,0.28) -- (0.44,0.50) -- (0.92,0.28);
+  \draw[photon]  (0.08,0.78) -- (0.44,0.50);
+  \draw[photon]  (0.44,0.50) -- (0.92,0.78);
+  \node[vertex] at (0.44,0.50) {};
+  \node[particlelabel, above left]  at (0.13,0.74) {$\gamma$};
+  \node[particlelabel, below left]  at (0.14,0.22) {$e^-$};
+  \node[particlelabel, above right] at (0.87,0.74) {$\gamma$};
+  \node[particlelabel, below right] at (0.86,0.22) {$e^-$};
+}
+
+\newcommand{\DiagramD}{%
+  % q -> q + g
+  \draw[fermion] (0.08,0.28) -- (0.46,0.50) -- (0.92,0.76);
+  \draw[gluon]   (0.46,0.50) -- (0.80,0.18);
+  \node[vertex] at (0.46,0.50) {};
+  \node[particlelabel, below left]  at (0.13,0.22) {$q$};
+  \node[particlelabel, above right] at (0.88,0.72) {$q$};
+  \node[particlelabel, below right] at (0.78,0.14) {$g$};
+}
+
+\newcommand{\DiagramE}{%
+  % pair production from photon
+  \draw[photon] (0.08,0.50) -- (0.42,0.50)
+    node[pos=0.22, above, particlelabel] {$\gamma$};
+  \draw[fermion] (0.42,0.50) -- (0.92,0.78)
+    node[pos=0.84, above right, particlelabel] {$e^-$};
+  \draw[antifermion] (0.42,0.50) -- (0.92,0.22)
+    node[pos=0.84, below right, particlelabel] {$e^+$};
+  \node[vertex] at (0.42,0.50) {};
+}
+
+\newcommand{\DiagramF}{%
+  % scalar exchange style
+  \draw[fermion] (0.08,0.76) -- (0.40,0.56)
+    node[pos=0.18, above left, particlelabel] {$f$};
+  \draw[fermion] (0.08,0.24) -- (0.40,0.44)
+    node[pos=0.18, below left, particlelabel] {$f$};
+  \draw[fermion] (0.60,0.56) -- (0.92,0.76)
+    node[pos=0.82, above right, particlelabel] {$f$};
+  \draw[fermion] (0.60,0.44) -- (0.92,0.24)
+    node[pos=0.82, below right, particlelabel] {$f$};
+  \draw[scalar] (0.40,0.56) -- (0.60,0.44)
+    node[pos=0.50, right, particlelabel] {$\phi$};
+  \node[vertex] at (0.40,0.56) {};
+  \node[vertex] at (0.60,0.44) {};
+}
+
+\newcommand{\DiagramG}{%
+  % photon emission from electron line
+  \draw[fermion] (0.08,0.24) -- (0.44,0.50) -- (0.92,0.76);
+  \draw[photon]  (0.44,0.50) -- (0.80,0.18);
+  \node[vertex] at (0.44,0.50) {};
+  \node[particlelabel, below left]  at (0.13,0.20) {$e^-$};
+  \node[particlelabel, above right] at (0.87,0.72) {$e^-$};
+  \node[particlelabel, below right] at (0.78,0.14) {$\gamma$};
+}
+
+\newcommand{\DiagramH}{%
+  % s-channel scattering
+  \draw[fermion] (0.08,0.76) -- (0.50,0.50)
+    node[pos=0.20, above left, particlelabel] {$f$};
+  \draw[antifermion] (0.08,0.24) -- (0.50,0.50)
+    node[pos=0.20, below left, particlelabel] {$\bar f$};
+  \draw[photon] (0.50,0.50) -- (0.50,0.82)
+    node[pos=0.55, right, particlelabel] {$\gamma$};
+  \draw[fermion] (0.50,0.50) -- (0.92,0.76)
+    node[pos=0.82, above right, particlelabel] {$f$};
+  \draw[antifermion] (0.50,0.50) -- (0.92,0.24)
+    node[pos=0.82, below right, particlelabel] {$\bar f$};
+  \node[vertex] at (0.50,0.50) {};
+}
+
+% ===== Select diagram by number =====
+\newcommand{\UseDiagram}[1]{%
+  \ifcase#1
+  \or \DiagramA
+  \or \DiagramB
+  \or \DiagramC
+  \or \DiagramD
+  \or \DiagramE
+  \or \DiagramF
+  \or \DiagramG
+  \or \DiagramH
+  \fi
+}
+
+% ===== Deterministic shuffle of 1..8 using seed =====
+\newcount\permA
+\newcount\permB
+\newcount\permC
+\newcount\permD
+\newcount\permE
+\newcount\permF
+\newcount\permG
+\newcount\permH
+
+\newcommand{\InitPermutation}{%
+  \permA=1 \permB=2 \permC=3 \permD=4
+  \permE=5 \permF=6 \permG=7 \permH=8
+}
+
+\newcommand{\SwapPerms}[2]{%
+  \ifcase#1\or
+    \count255=\permA
+    \ifcase#2\or\permA=\permA\or\permA=\permB\or\permA=\permC\or\permA=\permD\or\permA=\permE\or\permA=\permF\or\permA=\permG\or\permA=\permH\fi
+    \ifcase#2\or\permA=\count255\or\permB=\count255\or\permC=\count255\or\permD=\count255\or\permE=\count255\or\permF=\count255\or\permG=\count255\or\permH=\count255\fi
+  \or
+    \count255=\permB
+    \ifcase#2\or\permB=\permA\or\permB=\permB\or\permB=\permC\or\permB=\permD\or\permB=\permE\or\permB=\permF\or\permB=\permG\or\permB=\permH\fi
+    \ifcase#2\or\permA=\count255\or\permB=\count255\or\permC=\count255\or\permD=\count255\or\permE=\count255\or\permF=\count255\or\permG=\count255\or\permH=\count255\fi
+  \or
+    \count255=\permC
+    \ifcase#2\or\permC=\permA\or\permC=\permB\or\permC=\permC\or\permC=\permD\or\permC=\permE\or\permC=\permF\or\permC=\permG\or\permC=\permH\fi
+    \ifcase#2\or\permA=\count255\or\permB=\count255\or\permC=\count255\or\permD=\count255\or\permE=\count255\or\permF=\count255\or\permG=\count255\or\permH=\count255\fi
+  \or
+    \count255=\permD
+    \ifcase#2\or\permD=\permA\or\permD=\permB\or\permD=\permC\or\permD=\permD\or\permD=\permE\or\permD=\permF\or\permD=\permG\or\permD=\permH\fi
+    \ifcase#2\or\permA=\count255\or\permB=\count255\or\permC=\count255\or\permD=\count255\or\permE=\count255\or\permF=\count255\or\permG=\count255\or\permH=\count255\fi
+  \or
+    \count255=\permE
+    \ifcase#2\or\permE=\permA\or\permE=\permB\or\permE=\permC\or\permE=\permD\or\permE=\permE\or\permE=\permF\or\permE=\permG\or\permE=\permH\fi
+    \ifcase#2\or\permA=\count255\or\permB=\count255\or\permC=\count255\or\permD=\count255\or\permE=\count255\or\permF=\count255\or\permG=\count255\or\permH=\count255\fi
+  \or
+    \count255=\permF
+    \ifcase#2\or\permF=\permA\or\permF=\permB\or\permF=\permC\or\permF=\permD\or\permF=\permE\or\permF=\permF\or\permF=\permG\or\permF=\permH\fi
+    \ifcase#2\or\permA=\count255\or\permB=\count255\or\permC=\count255\or\permD=\count255\or\permE=\count255\or\permF=\count255\or\permG=\count255\or\permH=\count255\fi
+  \or
+    \count255=\permG
+    \ifcase#2\or\permG=\permA\or\permG=\permB\or\permG=\permC\or\permG=\permD\or\permG=\permE\or\permG=\permF\or\permG=\permG\or\permG=\permH\fi
+    \ifcase#2\or\permA=\count255\or\permB=\count255\or\permC=\count255\or\permD=\count255\or\permE=\count255\or\permF=\count255\or\permG=\count255\or\permH=\count255\fi
+  \or
+    \count255=\permH
+    \ifcase#2\or\permH=\permA\or\permH=\permB\or\permH=\permC\or\permH=\permD\or\permH=\permE\or\permH=\permF\or\permH=\permG\or\permH=\permH\fi
+    \ifcase#2\or\permA=\count255\or\permB=\count255\or\permC=\count255\or\permD=\count255\or\permE=\count255\or\permF=\count255\or\permG=\count255\or\permH=\count255\fi
+  \fi
+}
+
+\newcommand{\ShufflePermutation}{%
+  \InitPermutation
+  \pgfmathsetseed{\DiagramSeed}
+  \foreach \i in {8,7,6,5,4,3,2} {
+    \pgfmathtruncatemacro{\j}{1 + int(rnd*\i)}
+    \expandafter\SwapPerms\expandafter{\i}{\j}
+  }
+}
+
+\newcommand{\PermValue}[1]{%
+  \ifcase#1\or\number\permA\or\number\permB\or\number\permC\or\number\permD\or\number\permE\or\number\permF\or\number\permG\or\number\permH\fi
+}
+
+% ===== Draw one panel =====
+\newcommand{\DrawPanel}[3]{%
+  \begin{scope}[shift={({#1},{#2})}]
+    %\draw[borderbox, opacity=\DiagramOpacity] (0,0) rectangle (\BoxW,\BoxH);
+    \begin{scope}[x={(\BoxW in,0)}, y={(0,\BoxH in)}, opacity=\DiagramOpacity]
+      \UseDiagram{#3}
+    \end{scope}
+  \end{scope}
+}
+
+% ===== Background =====
+\AddToShipoutPictureBG{%
+  \AtPageLowerLeft{%
+    \begin{tikzpicture}[remember picture,overlay]
+      \begin{scope}[shift={(current page.south west)}, x=1in, y=1in]
+
+        \def\PageW{8.5}
+        \def\PageH{11.0}
+        \pgfmathsetmacro{\YTop}{\PageH-\GridTopOffsetIn}
+        \clip (0,0) rectangle (\PageW,\YTop);
+
+        \ShufflePermutation
+
+        \pgfmathsetmacro{\TotalW}{2*\BoxW + \BoxGapX}
+        \pgfmathsetmacro{\TotalH}{4*\BoxH + 3*\BoxGapY}
+        \pgfmathsetmacro{\XLeft}{(\PageW-\TotalW)/2}
+        \pgfmathsetmacro{\YBottom}{(\YTop-\TotalH)/2}
+
+        % Row 1 (top)
+        \DrawPanel{\XLeft}{\YBottom + 3*(\BoxH+\BoxGapY)}{\PermValue{1}}
+        \DrawPanel{\XLeft+\BoxW+\BoxGapX}{\YBottom + 3*(\BoxH+\BoxGapY)}{\PermValue{2}}
+
+        % Row 2
+        \DrawPanel{\XLeft}{\YBottom + 2*(\BoxH+\BoxGapY)}{\PermValue{3}}
+        \DrawPanel{\XLeft+\BoxW+\BoxGapX}{\YBottom + 2*(\BoxH+\BoxGapY)}{\PermValue{4}}
+
+        % Row 3
+        \DrawPanel{\XLeft}{\YBottom + 1*(\BoxH+\BoxGapY)}{\PermValue{5}}
+        \DrawPanel{\XLeft+\BoxW+\BoxGapX}{\YBottom + 1*(\BoxH+\BoxGapY)}{\PermValue{6}}
+
+        % Row 4 (bottom)
+        \DrawPanel{\XLeft}{\YBottom}{\PermValue{7}}
+        \DrawPanel{\XLeft+\BoxW+\BoxGapX}{\YBottom}{\PermValue{8}}
+
+      \end{scope}
+    \end{tikzpicture}%
+  }%
+}
+
+% ===== Header =====
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+\fancyhead[C]{%
+\renewcommand{\arraystretch}{1.35}
+\setlength{\tabcolsep}{3pt}
+\begin{tabularx}{\textwidth}{|X|X|X|X|X|}
+\hline
+\StudentField &
+\#0123456789 &
+\CourseField &
+\today &
+\textbf{\TitleField} \\
+\hline
+\end{tabularx}
+}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\null
+
+% 8 QED-style tracing diagrams in a 4x2 layout.
+% Change \DiagramSeed to reshuffle the order.
+% Change \DiagramOpacity to make them lighter or darker.
+
+\end{document}
